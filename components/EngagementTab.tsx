@@ -31,7 +31,7 @@ export default function EngagementTab({ clientId }: { clientId: Id<"clients"> })
                   <div>
                     <p className="text-sm font-medium text-gray-700">{RULE_LABELS[rule.ruleType]}</p>
                     <p className="text-xs text-gray-400">
-                      {rule.enabled ? "Active — will run automatically" : "Disabled"}
+                      {rule.enabled ? "Active, will run automatically" : "Disabled"}
                     </p>
                   </div>
                   <button

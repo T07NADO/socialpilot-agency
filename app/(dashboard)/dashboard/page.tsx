@@ -89,7 +89,7 @@ export default function DashboardPage() {
             <p className="text-sm mt-2" style={{ color: "var(--ink-3)", maxWidth: 480 }}>
               {stats?.pendingApprovals
                 ? `${stats.pendingApprovals} post${stats.pendingApprovals > 1 ? "s" : ""} waiting for your review.`
-                : "All caught up — nothing needs review right now."}
+                : "All caught up. Nothing needs review right now."}
             </p>
           </div>
           <div className="flex gap-2 flex-shrink-0">
@@ -151,7 +151,7 @@ export default function DashboardPage() {
             </div>
           ) : pendingPosts.length === 0 ? (
             <div className="py-12 text-center text-[13px]" style={{ color: "var(--ink-4)" }}>
-              Nothing pending — all clear
+              Nothing pending. All clear
             </div>
           ) : (
             pendingPosts.slice(0, 6).map((post: any) => (

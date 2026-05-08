@@ -31,7 +31,7 @@ export default function AnalyticsTab({ clientId }: { clientId: Id<"clients"> }) 
       </div>
 
       <div className="bg-white rounded-xl border p-5">
-        <h3 className="font-semibold mb-4">Posts by platform — last 8 weeks</h3>
+        <h3 className="font-semibold mb-4">Posts by platform, last 8 weeks</h3>
         <ResponsiveContainer width="100%" height={220}>
           <BarChart data={stats.weeklyBreakdown} barSize={10}>
             <XAxis dataKey="week" tick={{ fontSize: 11 }} />

@@ -41,7 +41,7 @@ export default function PostsQueue({ clientId }: { clientId: Id<"clients"> }) {
         className="text-center py-16 rounded-xl"
         style={{ background: "var(--paper)", border: "1px solid var(--line)" }}
       >
-        <p className="text-[14px]" style={{ color: "var(--ink-4)" }}>No posts yet — compose your first one</p>
+        <p className="text-[14px]" style={{ color: "var(--ink-4)" }}>No posts yet. Compose your first one</p>
       </div>
     );
   }
