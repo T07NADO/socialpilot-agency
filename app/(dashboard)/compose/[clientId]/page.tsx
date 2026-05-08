@@ -9,7 +9,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { ChevronLeft } from "lucide-react";
 
-type Platform = "LINKEDIN" | "INSTAGRAM";
+type Platform = "LINKEDIN";
 
 export default function ComposePage({ params }: { params: { clientId: string } }) {
   const clientId = params.clientId as Id<"clients">;
@@ -19,7 +19,7 @@ export default function ComposePage({ params }: { params: { clientId: string } }
   const generatePost = useAction(api.ai.generatePost);
   const createPost   = useMutation(api.posts.create);
 
-  const [platform, setPlatform]       = useState<Platform>("LINKEDIN");
+  const platform: Platform = "LINKEDIN";
   const [brief, setBrief]             = useState("");
   const [generating, setGenerating]   = useState(false);
   const [versions, setVersions]       = useState<any[]>([]);
@@ -108,27 +108,15 @@ export default function ComposePage({ params }: { params: { clientId: string } }
               onBlur={(e) => (e.currentTarget.style.borderColor = "var(--line)")}
             />
 
-            {/* Platform chooser */}
+            {/* Platform indicator */}
             <div className="flex gap-2 mt-4">
-              {(["LINKEDIN", "INSTAGRAM"] as Platform[]).map((p) => (
-                <label
-                  key={p}
-                  className="flex items-center gap-2 px-3.5 py-2.5 rounded-lg border cursor-pointer text-[13px] font-medium flex-1 transition-colors"
-                  style={
-                    platform === p
-                      ? { background: "var(--ink)", color: "var(--ink-on)", borderColor: "var(--ink)" }
-                      : { background: "var(--paper)", color: "var(--ink-2)", borderColor: "var(--line)" }
-                  }
-                >
-                  <input type="radio" name="platform" value={p} checked={platform === p}
-                    onChange={() => setPlatform(p)} className="hidden" />
-                  <Image
-                    src={p === "LINKEDIN" ? "/badge-linkedin.svg" : "/badge-instagram.svg"}
-                    width={16} height={16} alt={p}
-                  />
-                  {p === "LINKEDIN" ? "LinkedIn" : "Instagram"}
-                </label>
-              ))}
+              <div
+                className="flex items-center gap-2 px-3.5 py-2.5 rounded-lg border text-[13px] font-medium"
+                style={{ background: "var(--ink)", color: "var(--ink-on)", borderColor: "var(--ink)" }}
+              >
+                <Image src="/badge-linkedin.svg" width={16} height={16} alt="LinkedIn" />
+                LinkedIn
+              </div>
             </div>
 
             {/* Generate */}
@@ -166,7 +154,7 @@ export default function ComposePage({ params }: { params: { clientId: string } }
                 >
                   <div className="flex items-center justify-between">
                     <span className="text-[11px] font-mono uppercase tracking-[0.05em]" style={{ color: "var(--ink-3)" }}>
-                      v{i + 1} · {platform === "LINKEDIN" ? "LI" : "IG"}
+                      v{i + 1} · LI
                     </span>
                     {selected === i ? (
                       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-4 h-4" style={{ color: "var(--ink)" }}>

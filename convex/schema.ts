@@ -7,6 +7,7 @@ export default defineSchema({
     name: v.string(),
     email: v.string(),
     plan: v.union(v.literal("FREE"), v.literal("PRO"), v.literal("AGENCY")),
+    logoStorageId: v.optional(v.id("_storage")),
   }).index("by_clerk_user", ["clerkUserId"]),
 
   clients: defineTable({

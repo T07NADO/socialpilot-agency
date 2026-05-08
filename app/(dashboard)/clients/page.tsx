@@ -23,25 +23,16 @@ export default function ClientsPage() {
 
   return (
     <div>
-      <div className="flex items-end justify-between mb-7">
-        <div>
-          <div className="text-[11px] font-medium uppercase tracking-[0.12em] mb-2" style={{ color: "var(--ink-3)" }}>
-            Clients
-          </div>
-          <h1 className="font-display text-[36px] font-semibold tracking-[-0.022em] leading-[1.1]">
-            {clients == null ? "…" : clients.length === 0 ? "No clients yet" : `${clients.length} client${clients.length === 1 ? "" : "s"}`}
-          </h1>
-          <p className="text-sm mt-1.5" style={{ color: "var(--ink-3)" }}>
-            Click any card to manage posts and settings.
-          </p>
+      <div className="mb-7">
+        <div className="text-[11px] font-medium uppercase tracking-[0.12em] mb-2" style={{ color: "var(--ink-3)" }}>
+          Clients
         </div>
-        <Link
-          href="/clients/new"
-          className="flex items-center gap-1.5 text-sm font-semibold h-9 px-4 rounded-lg"
-          style={{ background: "var(--gold-cta)", color: "var(--gold-cta-ink)" }}
-        >
-          + New client
-        </Link>
+        <h1 className="font-display text-[36px] font-semibold tracking-[-0.022em] leading-[1.1]">
+          {clients == null ? "…" : clients.length === 0 ? "No clients yet" : `${clients.length} client${clients.length === 1 ? "" : "s"}`}
+        </h1>
+        <p className="text-sm mt-1.5" style={{ color: "var(--ink-3)" }}>
+          Click any card to manage posts and settings.
+        </p>
       </div>
 
       {!clients ? (
@@ -83,9 +74,6 @@ export default function ClientsPage() {
                 <div className="flex gap-1.5 flex-shrink-0">
                   {client.socialAccounts?.some((a: any) => a.platform === "LINKEDIN") && (
                     <Image src="/badge-linkedin.svg" width={18} height={18} alt="LinkedIn" />
-                  )}
-                  {client.socialAccounts?.some((a: any) => a.platform === "INSTAGRAM") && (
-                    <Image src="/badge-instagram.svg" width={18} height={18} alt="Instagram" />
                   )}
                 </div>
               </div>

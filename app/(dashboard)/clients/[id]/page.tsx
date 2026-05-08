@@ -222,21 +222,6 @@ function ClientSettings({ client }: { client: any }) {
           )}
         </div>
 
-        {/* Instagram — coming soon */}
-        <div className="rounded-lg p-4 opacity-50" style={{ border: "1px solid var(--line)" }}>
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <img src="/badge-instagram.svg" width={32} height={32} alt="Instagram" className="rounded-lg" />
-              <div>
-                <p className="text-sm font-semibold" style={{ color: "var(--ink)" }}>Instagram</p>
-                <p className="text-[12px]" style={{ color: "var(--ink-3)" }}>Coming soon</p>
-              </div>
-            </div>
-            <span className="text-[11px] font-medium px-2.5 py-1 rounded-full" style={{ background: "var(--sand)", color: "var(--ink-3)" }}>
-              Coming soon
-            </span>
-          </div>
-        </div>
       </div>
     </div>
   );

@@ -29,10 +29,18 @@ export const get = query({
     const identity = await ctx.auth.getUserIdentity();
     if (!identity) return null;
 
-    return ctx.db
+    const agency = await ctx.db
       .query("agencies")
       .withIndex("by_clerk_user", (q) => q.eq("clerkUserId", identity.subject))
       .first();
+
+    if (!agency) return null;
+
+    const logoUrl = agency.logoStorageId
+      ? await ctx.storage.getUrl(agency.logoStorageId)
+      : null;
+
+    return { ...agency, logoUrl };
   },
 });
 
@@ -49,5 +57,37 @@ export const update = mutation({
 
     if (!agency) throw new Error("Agency not found");
     await ctx.db.patch(agency._id, { name: args.name });
+  },
+});
+
+export const updateProfile = mutation({
+  args: {
+    name: v.string(),
+    logoStorageId: v.optional(v.id("_storage")),
+  },
+  handler: async (ctx, args) => {
+    const identity = await ctx.auth.getUserIdentity();
+    if (!identity) throw new Error("Not authenticated");
+
+    const agency = await ctx.db
+      .query("agencies")
+      .withIndex("by_clerk_user", (q) => q.eq("clerkUserId", identity.subject))
+      .first();
+
+    if (!agency) throw new Error("Agency not found");
+
+    const patch: Record<string, any> = { name: args.name };
+    if (args.logoStorageId !== undefined) {
+      patch.logoStorageId = args.logoStorageId;
+    }
+
+    await ctx.db.patch(agency._id, patch);
+  },
+});
+
+export const generateUploadUrl = mutation({
+  args: {},
+  handler: async (ctx) => {
+    return await ctx.storage.generateUploadUrl();
   },
 });

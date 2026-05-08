@@ -132,18 +132,24 @@ export default function Sidebar({ agency }: { agency: any }) {
       </nav>
 
       {/* Footer */}
-      <div
-        className="flex items-center gap-2.5 p-3 px-4"
+      <Link
+        href="/profile"
+        className="flex items-center gap-2.5 p-3 px-4 transition-colors group"
         style={{ borderTop: "1px solid var(--line)" }}
+        onMouseEnter={(e) => ((e.currentTarget as HTMLElement).style.background = "var(--row-hover)")}
+        onMouseLeave={(e) => ((e.currentTarget as HTMLElement).style.background = "")}
       >
         <UserButton />
-        <div className="min-w-0">
+        <div className="min-w-0 flex-1">
           <div className="text-[13px] font-medium text-ink truncate">{user?.fullName ?? user?.username}</div>
           {agency && (
             <div className="text-[11px] truncate" style={{ color: "var(--ink-3)" }}>{agency.name}</div>
           )}
         </div>
-      </div>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" className="w-3.5 h-3.5 flex-shrink-0 opacity-0 group-hover:opacity-100 transition-opacity" style={{ color: "var(--ink-4)" }}>
+          <path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/>
+        </svg>
+      </Link>
     </aside>
   );
 }

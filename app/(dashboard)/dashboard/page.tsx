@@ -170,10 +170,9 @@ export default function DashboardPage() {
                 >
                   {post.contentText}
                 </p>
-                <Image
-                  src={post.platform === "LINKEDIN" ? "/badge-linkedin.svg" : "/badge-instagram.svg"}
-                  width={18} height={18} alt={post.platform}
-                />
+                {post.platform === "LINKEDIN" && (
+                  <Image src="/badge-linkedin.svg" width={18} height={18} alt="LinkedIn" />
+                )}
                 <StatusChip status={post.status} />
                 <Link
                   href="/approvals"

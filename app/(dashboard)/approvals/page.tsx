@@ -115,10 +115,9 @@ export default function ApprovalsPage() {
                 <div>{selectedPost.contentText.slice(0, 40)}…</div>
               </div>
               <span className="chip chip-pending ml-auto"><span className="chip-dot" />Pending</span>
-              <Image
-                src={selectedPost.platform === "LINKEDIN" ? "/badge-linkedin.svg" : "/badge-instagram.svg"}
-                width={22} height={22} alt={selectedPost.platform}
-              />
+              {selectedPost.platform === "LINKEDIN" && (
+                <Image src="/badge-linkedin.svg" width={22} height={22} alt="LinkedIn" />
+              )}
             </div>
 
             {/* Post shell */}
@@ -136,10 +135,9 @@ export default function ApprovalsPage() {
                     {selectedPost.platform}
                   </div>
                 </div>
-                <Image
-                  src={selectedPost.platform === "LINKEDIN" ? "/badge-linkedin.svg" : "/badge-instagram.svg"}
-                  width={20} height={20} alt="" className="ml-auto"
-                />
+                {selectedPost.platform === "LINKEDIN" && (
+                  <Image src="/badge-linkedin.svg" width={20} height={20} alt="" className="ml-auto" />
+                )}
               </div>
 
               <p
