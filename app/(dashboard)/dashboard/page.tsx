@@ -33,7 +33,7 @@ function StatusChip({ status }: { status: string }) {
 
 function ClientAvatar({ name }: { name: string }) {
   const initials = name.split(" ").map((w) => w[0]).join("").slice(0, 2).toUpperCase();
-  const hue = [...name].reduce((a, c) => a + c.charCodeAt(0), 0) % 360;
+  const hue = Array.from(name).reduce((a, c) => a + c.charCodeAt(0), 0) % 360;
   return (
     <div
       className="w-8 h-8 rounded-full flex items-center justify-center text-[13px] font-semibold text-white flex-shrink-0"
