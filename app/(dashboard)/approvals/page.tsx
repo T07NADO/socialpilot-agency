@@ -3,92 +3,186 @@
 import { useQuery, useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { Id } from "@/convex/_generated/dataModel";
-import { CheckCircle, XCircle, Linkedin, Instagram, Clock } from "lucide-react";
+import { useState } from "react";
+import Image from "next/image";
 import { formatDistanceToNow } from "date-fns";
+
+function ClientAvatar({ name, size = 28 }: { name: string; size?: number }) {
+  const initials = name.split(" ").map((w) => w[0]).join("").slice(0, 2).toUpperCase();
+  const hue = [...name].reduce((a, c) => a + c.charCodeAt(0), 0) % 360;
+  return (
+    <div
+      className="rounded-full flex items-center justify-center font-semibold text-white flex-shrink-0"
+      style={{ width: size, height: size, fontSize: size * 0.38, background: `hsl(${hue},55%,42%)` }}
+    >
+      {initials}
+    </div>
+  );
+}
 
 export default function ApprovalsPage() {
   const posts = useQuery(api.posts.listPendingApprovals);
   const approve = useMutation(api.posts.approve);
-  const reject = useMutation(api.posts.reject);
+  const reject  = useMutation(api.posts.reject);
+  const [selected, setSelected] = useState<string | null>(null);
+
+  const selectedPost = posts?.find((p: any) => p._id === selected) ?? posts?.[0] ?? null;
 
   return (
-    <div className="max-w-4xl mx-auto">
-      <div className="flex items-center justify-between mb-8">
-        <div>
-          <h1 className="text-2xl font-bold text-gray-900">Approvals</h1>
-          <p className="text-gray-500 text-sm mt-1">{posts?.length ?? 0} posts waiting</p>
+    <div
+      className="rounded-xl overflow-hidden"
+      style={{
+        background: "var(--paper)",
+        border: "1px solid var(--line)",
+        boxShadow: "var(--shadow-edge)",
+        display: "grid",
+        gridTemplateColumns: "300px 1fr",
+        minHeight: "calc(100vh - 128px)",
+      }}
+    >
+      {/* Inbox */}
+      <div style={{ borderRight: "1px solid var(--line)" }}>
+        <div
+          className="flex items-center justify-between px-5 py-4"
+          style={{ borderBottom: "1px solid var(--line)" }}
+        >
+          <h2 className="font-display text-[18px] font-semibold">Approvals</h2>
+          {posts && posts.length > 0 && (
+            <span className="chip chip-pending">
+              <span className="chip-dot" />{posts.length} waiting
+            </span>
+          )}
         </div>
-        {posts && posts.length > 0 && (
-          <button
-            onClick={() => posts.forEach((p: any) => approve({ postId: p._id }))}
-            className="flex items-center gap-2 bg-green-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-green-700"
-          >
-            <CheckCircle className="w-4 h-4" /> Approve all
-          </button>
+
+        {!posts ? (
+          <div className="p-4 space-y-2">
+            {[...Array(4)].map((_, i) => (
+              <div key={i} className="h-14 rounded-lg animate-pulse" style={{ background: "var(--sand)" }} />
+            ))}
+          </div>
+        ) : posts.length === 0 ? (
+          <div className="py-16 text-center text-[13px]" style={{ color: "var(--ink-4)" }}>
+            All caught up
+          </div>
+        ) : (
+          posts.map((post: any) => {
+            const isActive = (selected ?? posts[0]?._id) === post._id;
+            const age = formatDistanceToNow(new Date(post._creationTime), { addSuffix: false });
+            const isUrgent = post._creationTime < Date.now() - 86400000;
+            return (
+              <button
+                key={post._id}
+                onClick={() => setSelected(post._id)}
+                className="w-full text-left grid items-start gap-2.5 px-5 py-3.5 transition-colors"
+                style={{
+                  gridTemplateColumns: "28px 1fr auto",
+                  borderBottom: "1px solid var(--line)",
+                  background: isActive ? "var(--sand)" : undefined,
+                  borderLeft: isActive ? "3px solid var(--gold-cta)" : "3px solid transparent",
+                }}
+              >
+                <ClientAvatar name={post.client?.name ?? "?"} size={28} />
+                <div className="min-w-0">
+                  <div className="text-[13px] font-medium truncate" style={{ color: "var(--ink)" }}>
+                    {post.client?.name} · {post.contentText.slice(0, 28)}…
+                  </div>
+                  <div className="text-[12px] mt-0.5 line-clamp-1" style={{ color: "var(--ink-3)" }}>
+                    {post.contentText}
+                  </div>
+                </div>
+                <div className="text-[11px] font-mono" style={{ color: isUrgent ? "var(--rust)" : "var(--ink-4)" }}>
+                  {age}
+                </div>
+              </button>
+            );
+          })
         )}
       </div>
 
-      {!posts ? (
-        <div className="space-y-3">
-          {[...Array(3)].map((_, i) => (
-            <div key={i} className="h-32 bg-white border rounded-xl animate-pulse" />
-          ))}
-        </div>
-      ) : posts.length === 0 ? (
-        <div className="text-center py-20 bg-white rounded-xl border">
-          <CheckCircle className="w-12 h-12 text-green-400 mx-auto mb-3" />
-          <p className="text-gray-500">All caught up — no pending approvals</p>
-        </div>
-      ) : (
-        <div className="space-y-3">
-          {posts.map((post: any) => (
-            <div key={post._id} className="bg-white rounded-xl border p-5">
-              <div className="flex items-start justify-between gap-4">
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-2 mb-2">
-                    {post.platform === "LINKEDIN" ? (
-                      <span className="flex items-center gap-1 text-xs bg-blue-50 text-blue-600 px-2 py-0.5 rounded-md">
-                        <Linkedin className="w-3 h-3" /> LinkedIn
-                      </span>
-                    ) : (
-                      <span className="flex items-center gap-1 text-xs bg-pink-50 text-pink-600 px-2 py-0.5 rounded-md">
-                        <Instagram className="w-3 h-3" /> Instagram
-                      </span>
-                    )}
-                    <span className="text-xs font-medium text-gray-700">{post.client?.name}</span>
-                    <span className="flex items-center gap-1 text-xs text-gray-400">
-                      <Clock className="w-3 h-3" />
-                      {formatDistanceToNow(new Date(post._creationTime), { addSuffix: true })}
-                    </span>
-                  </div>
-                  <p className="text-sm text-gray-700 whitespace-pre-line">{post.contentText}</p>
-                  {post.hashtags?.length > 0 && (
-                    <div className="flex flex-wrap gap-1 mt-2">
-                      {post.hashtags.map((h: string) => (
-                        <span key={h} className="text-xs text-violet-500">#{h}</span>
-                      ))}
-                    </div>
-                  )}
-                </div>
-                <div className="flex flex-col gap-2 flex-shrink-0">
-                  <button
-                    onClick={() => approve({ postId: post._id as Id<"posts"> })}
-                    className="flex items-center gap-1.5 bg-green-600 text-white px-3 py-1.5 rounded-lg text-xs font-medium hover:bg-green-700"
-                  >
-                    <CheckCircle className="w-3.5 h-3.5" /> Approve
-                  </button>
-                  <button
-                    onClick={() => reject({ postId: post._id as Id<"posts"> })}
-                    className="flex items-center gap-1.5 border border-red-200 text-red-500 px-3 py-1.5 rounded-lg text-xs font-medium hover:bg-red-50"
-                  >
-                    <XCircle className="w-3.5 h-3.5" /> Reject
-                  </button>
-                </div>
+      {/* Review panel */}
+      <div className="p-8" style={{ background: "var(--cream)" }}>
+        {!selectedPost ? (
+          <div className="h-full flex items-center justify-center text-[14px]" style={{ color: "var(--ink-4)" }}>
+            Select a post to review
+          </div>
+        ) : (
+          <>
+            {/* Meta row */}
+            <div className="flex items-center gap-3 mb-5 text-[13px]" style={{ color: "var(--ink-3)" }}>
+              <ClientAvatar name={selectedPost.client?.name ?? "?"} size={32} />
+              <div>
+                <div className="font-semibold" style={{ color: "var(--ink)" }}>{selectedPost.client?.name}</div>
+                <div>{selectedPost.contentText.slice(0, 40)}…</div>
               </div>
+              <span className="chip chip-pending ml-auto"><span className="chip-dot" />Pending</span>
+              <Image
+                src={selectedPost.platform === "LINKEDIN" ? "/badge-linkedin.svg" : "/badge-instagram.svg"}
+                width={22} height={22} alt={selectedPost.platform}
+              />
             </div>
-          ))}
-        </div>
-      )}
+
+            {/* Post shell */}
+            <div
+              className="rounded-xl p-6 mb-5 max-w-2xl"
+              style={{ background: "var(--paper)", border: "1px solid var(--line)", boxShadow: "var(--shadow-edge)" }}
+            >
+              <div className="flex items-center gap-3 mb-4">
+                <ClientAvatar name={selectedPost.client?.name ?? "?"} size={40} />
+                <div>
+                  <div className="text-sm font-semibold" style={{ color: "var(--ink)" }}>
+                    {selectedPost.client?.name}
+                  </div>
+                  <div className="text-[12px] font-mono" style={{ color: "var(--ink-3)" }}>
+                    {selectedPost.platform}
+                  </div>
+                </div>
+                <Image
+                  src={selectedPost.platform === "LINKEDIN" ? "/badge-linkedin.svg" : "/badge-instagram.svg"}
+                  width={20} height={20} alt="" className="ml-auto"
+                />
+              </div>
+
+              <p
+                className="text-[16px] leading-[1.6] whitespace-pre-wrap mb-4"
+                style={{ color: "var(--ink)" }}
+              >
+                {selectedPost.contentText}
+              </p>
+
+              {selectedPost.hashtags?.length > 0 && (
+                <p className="text-[13px] mb-4" style={{ color: "var(--sky-ink)" }}>
+                  {selectedPost.hashtags.map((h: string) => `#${h}`).join(" · ")}
+                </p>
+              )}
+            </div>
+
+            {/* Actions */}
+            <div className="flex gap-2.5 max-w-2xl">
+              <button
+                onClick={() => approve({ postId: selectedPost._id as Id<"posts"> })}
+                className="flex items-center gap-2 text-sm font-semibold h-10 px-5 rounded-lg"
+                style={{ background: "var(--gold-cta)", color: "var(--gold-cta-ink)" }}
+              >
+                Approve & schedule
+              </button>
+              <button
+                onClick={() => reject({ postId: selectedPost._id as Id<"posts"> })}
+                className="flex items-center gap-2 text-sm font-semibold h-10 px-5 rounded-lg"
+                style={{ background: "var(--ink)", color: "var(--ink-on)" }}
+              >
+                Request changes
+              </button>
+              <button
+                onClick={() => reject({ postId: selectedPost._id as Id<"posts"> })}
+                className="ml-auto flex items-center gap-2 text-sm font-medium h-10 px-5 rounded-lg"
+                style={{ color: "var(--ink-3)" }}
+              >
+                Back to drafts
+              </button>
+            </div>
+          </>
+        )}
+      </div>
     </div>
   );
 }

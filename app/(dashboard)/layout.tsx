@@ -6,6 +6,7 @@ import { api } from "@/convex/_generated/api";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import Sidebar from "@/components/Sidebar";
+import Topbar from "@/components/Topbar";
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   const { user, isLoaded } = useUser();
@@ -16,27 +17,31 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   useEffect(() => {
     if (!isLoaded || agency === undefined) return;
     if (!user) { router.push("/sign-in"); return; }
-
     if (agency === null) {
       getOrCreate({
         name: user.fullName ?? user.username ?? "My Agency",
         email: user.primaryEmailAddress?.emailAddress ?? "",
-      }).then(() => {});
+      });
     }
   }, [isLoaded, user, agency]);
 
   if (!isLoaded || agency === undefined) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="w-8 h-8 border-4 border-violet-600 border-t-transparent rounded-full animate-spin" />
+      <div className="min-h-screen flex items-center justify-center bg-cream">
+        <div className="w-6 h-6 border-2 border-ink border-t-transparent rounded-full animate-spin" />
       </div>
     );
   }
 
   return (
-    <div className="flex min-h-screen bg-gray-50">
+    <div style={{ display: "grid", gridTemplateColumns: "240px 1fr", minHeight: "100vh" }}>
       <Sidebar agency={agency} />
-      <main className="flex-1 ml-64 p-8 overflow-auto">{children}</main>
+      <div className="flex flex-col min-w-0">
+        <Topbar />
+        <main className="flex-1 px-10 py-8 max-w-[1280px] w-full self-center">
+          {children}
+        </main>
+      </div>
     </div>
   );
 }

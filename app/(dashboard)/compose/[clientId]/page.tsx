@@ -5,8 +5,9 @@ import { useQuery, useMutation, useAction } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { Id } from "@/convex/_generated/dataModel";
 import { useRouter } from "next/navigation";
-import { ChevronLeft, Sparkles, Linkedin, Instagram, Check } from "lucide-react";
 import Link from "next/link";
+import Image from "next/image";
+import { ChevronLeft } from "lucide-react";
 
 type Platform = "LINKEDIN" | "INSTAGRAM";
 
@@ -16,15 +17,15 @@ export default function ComposePage({ params }: { params: { clientId: string } }
 
   const client = useQuery(api.clients.get, { clientId });
   const generatePost = useAction(api.ai.generatePost);
-  const createPost = useMutation(api.posts.create);
+  const createPost   = useMutation(api.posts.create);
 
-  const [platform, setPlatform] = useState<Platform>("LINKEDIN");
-  const [brief, setBrief] = useState("");
-  const [generating, setGenerating] = useState(false);
-  const [versions, setVersions] = useState<any[]>([]);
-  const [selected, setSelected] = useState(0);
-  const [editedContent, setEditedContent] = useState("");
-  const [submitting, setSubmitting] = useState(false);
+  const [platform, setPlatform]       = useState<Platform>("LINKEDIN");
+  const [brief, setBrief]             = useState("");
+  const [generating, setGenerating]   = useState(false);
+  const [versions, setVersions]       = useState<any[]>([]);
+  const [selected, setSelected]       = useState(0);
+  const [editedContent, setEdited]    = useState("");
+  const [submitting, setSubmitting]   = useState(false);
 
   async function handleGenerate() {
     if (!brief.trim() || !client) return;
@@ -32,23 +33,15 @@ export default function ComposePage({ params }: { params: { clientId: string } }
     try {
       const result = await generatePost({
         clientName: client.name,
-        industry: client.industry,
+        industry:   client.industry,
         platform,
         brief,
-        brandVoice: client.brandVoice
-          ? {
-              tone: client.brandVoice.tone,
-              targetAudience: client.brandVoice.targetAudience,
-              callToActionStyle: client.brandVoice.callToActionStyle,
-              bannedWords: client.brandVoice.bannedWords,
-              examplePosts: client.brandVoice.examplePosts,
-            }
-          : undefined,
+        brandVoice: client.brandVoice ?? undefined,
       });
       const v = result.versions ?? [];
       setVersions(v);
       setSelected(0);
-      setEditedContent(v[0]?.contentText ?? "");
+      setEdited(v[0]?.contentText ?? "");
     } catch (err: any) {
       alert(err.message ?? "Generation failed");
     } finally {
@@ -74,101 +67,194 @@ export default function ComposePage({ params }: { params: { clientId: string } }
   }
 
   return (
-    <div className="max-w-4xl mx-auto">
-      <div className="flex items-center gap-3 mb-8">
-        <Link href={`/clients/${clientId}`} className="text-gray-400 hover:text-gray-600">
+    <div>
+      {/* Page head */}
+      <div className="flex items-center gap-3 mb-7">
+        <Link href={`/clients/${clientId}`} style={{ color: "var(--ink-4)" }}>
           <ChevronLeft className="w-5 h-5" />
         </Link>
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Compose Post</h1>
-          {client && <p className="text-sm text-gray-400">{client.name}</p>}
+          <div className="text-[11px] font-medium uppercase tracking-[0.12em] flex items-center gap-2 mb-1" style={{ color: "var(--ink-3)" }}>
+            {client?.name} · Composer
+          </div>
+          <h1 className="font-display text-[32px] font-semibold tracking-[-0.022em]">What's the post about?</h1>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Left — inputs */}
-        <div className="space-y-5">
-          <div className="bg-white rounded-xl border p-5">
-            <p className="text-sm font-medium mb-3">Platform</p>
-            <div className="flex gap-3">
-              {(["LINKEDIN", "INSTAGRAM"] as Platform[]).map((p) => (
-                <button
-                  key={p}
-                  onClick={() => setPlatform(p)}
-                  className={`flex-1 flex items-center justify-center gap-2 py-2.5 rounded-lg border text-sm font-medium transition-colors ${
-                    platform === p
-                      ? p === "LINKEDIN"
-                        ? "bg-blue-600 text-white border-blue-600"
-                        : "bg-pink-500 text-white border-pink-500"
-                      : "border-gray-200 text-gray-600 hover:bg-gray-50"
-                  }`}
-                >
-                  {p === "LINKEDIN" ? <Linkedin className="w-4 h-4" /> : <Instagram className="w-4 h-4" />}
-                  {p === "LINKEDIN" ? "LinkedIn" : "Instagram"}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          <div className="bg-white rounded-xl border p-5">
-            <label className="block text-sm font-medium mb-2">Content brief</label>
+      <div className="grid gap-6" style={{ gridTemplateColumns: "1fr 340px", alignItems: "start" }}>
+        {/* Left — brief + versions */}
+        <div>
+          {/* Brief card */}
+          <div
+            className="rounded-xl p-6 mb-6"
+            style={{ background: "var(--paper)", border: "1px solid var(--line)", boxShadow: "var(--shadow-edge)" }}
+          >
+            <label className="block text-[12px] font-medium uppercase tracking-[0.08em] mb-2" style={{ color: "var(--ink-2)" }}>
+              Brief
+            </label>
             <textarea
               value={brief}
               onChange={(e) => setBrief(e.target.value)}
-              rows={4}
-              className="w-full border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-violet-500 resize-none"
-              placeholder="Describe what the post should be about, key message, any links or announcements…"
+              rows={3}
+              className="w-full rounded-lg px-3.5 py-3.5 text-[15px] leading-[1.5] resize-none outline-none transition-shadow"
+              placeholder="In one or two sentences…"
+              style={{
+                background: "var(--paper)",
+                border: "1px solid var(--line)",
+                color: "var(--ink)",
+                fontFamily: "'Geist', sans-serif",
+              }}
+              onFocus={(e) => (e.currentTarget.style.borderColor = "var(--ink)")}
+              onBlur={(e) => (e.currentTarget.style.borderColor = "var(--line)")}
             />
-            <button
-              onClick={handleGenerate}
-              disabled={generating || !brief.trim()}
-              className="mt-3 w-full flex items-center justify-center gap-2 bg-violet-600 text-white rounded-lg py-2.5 text-sm font-medium hover:bg-violet-700 disabled:opacity-50"
-            >
-              <Sparkles className="w-4 h-4" />
-              {generating ? "Generating…" : "Generate with AI"}
-            </button>
+
+            {/* Platform chooser */}
+            <div className="flex gap-2 mt-4">
+              {(["LINKEDIN", "INSTAGRAM"] as Platform[]).map((p) => (
+                <label
+                  key={p}
+                  className="flex items-center gap-2 px-3.5 py-2.5 rounded-lg border cursor-pointer text-[13px] font-medium flex-1 transition-colors"
+                  style={
+                    platform === p
+                      ? { background: "var(--ink)", color: "var(--ink-on)", borderColor: "var(--ink)" }
+                      : { background: "var(--paper)", color: "var(--ink-2)", borderColor: "var(--line)" }
+                  }
+                >
+                  <input type="radio" name="platform" value={p} checked={platform === p}
+                    onChange={() => setPlatform(p)} className="hidden" />
+                  <Image
+                    src={p === "LINKEDIN" ? "/badge-linkedin.svg" : "/badge-instagram.svg"}
+                    width={16} height={16} alt={p}
+                  />
+                  {p === "LINKEDIN" ? "LinkedIn" : "Instagram"}
+                </label>
+              ))}
+            </div>
+
+            {/* Generate */}
+            <div className="flex items-center gap-3 mt-4">
+              <button
+                onClick={handleGenerate}
+                disabled={generating || !brief.trim()}
+                className="flex items-center gap-2 text-sm font-semibold h-11 px-5 rounded-lg disabled:opacity-40 transition-colors"
+                style={{ background: "var(--gold-cta)", color: "var(--gold-cta-ink)" }}
+              >
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-3.5 h-3.5">
+                  <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/>
+                </svg>
+                {generating ? "Generating…" : "Generate 3 versions"}
+              </button>
+              <span className="text-[12px] font-mono" style={{ color: "var(--ink-4)" }}>
+                llama-3.3-70b
+              </span>
+            </div>
           </div>
 
+          {/* Version cards */}
           {versions.length > 0 && (
-            <div className="bg-white rounded-xl border p-5">
-              <p className="text-sm font-medium mb-3">Choose a version</p>
-              <div className="space-y-2">
-                {versions.map((v, i) => (
-                  <button
-                    key={i}
-                    onClick={() => { setSelected(i); setEditedContent(v.contentText); }}
-                    className={`w-full text-left p-3 rounded-lg border text-sm transition-colors ${
-                      selected === i ? "border-violet-500 bg-violet-50" : "border-gray-200 hover:bg-gray-50"
-                    }`}
+            <div className="grid grid-cols-3 gap-3.5">
+              {versions.map((v, i) => (
+                <button
+                  key={i}
+                  onClick={() => { setSelected(i); setEdited(v.contentText); }}
+                  className="text-left rounded-xl p-4 flex flex-col gap-2.5 transition-shadow cursor-pointer"
+                  style={
+                    selected === i
+                      ? { background: "var(--paper)", border: "2px solid var(--ink)", boxShadow: "var(--shadow-1)" }
+                      : { background: "var(--paper)", border: "1px solid var(--line)", boxShadow: "var(--shadow-edge)" }
+                  }
+                >
+                  <div className="flex items-center justify-between">
+                    <span className="text-[11px] font-mono uppercase tracking-[0.05em]" style={{ color: "var(--ink-3)" }}>
+                      v{i + 1} · {platform === "LINKEDIN" ? "LI" : "IG"}
+                    </span>
+                    {selected === i ? (
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-4 h-4" style={{ color: "var(--ink)" }}>
+                        <path d="M20 6 9 17l-5-5"/>
+                      </svg>
+                    ) : (
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-4 h-4" style={{ color: "var(--ink-4)" }}>
+                        <circle cx="12" cy="12" r="10"/>
+                      </svg>
+                    )}
+                  </div>
+                  <p className="text-[14px] leading-[1.55] line-clamp-4" style={{ color: "var(--ink)", whiteSpace: "pre-wrap" }}>
+                    {v.contentText}
+                  </p>
+                  {v.hashtags?.length > 0 && (
+                    <p className="text-[12px]" style={{ color: "var(--sky-ink)" }}>
+                      {v.hashtags.map((h: string) => `#${h}`).join(" · ")}
+                    </p>
+                  )}
+                  <div
+                    className="flex justify-between text-[11px] font-mono pt-2 mt-auto"
+                    style={{ borderTop: "1px dashed var(--line)", color: "var(--ink-4)" }}
                   >
-                    <div className="flex items-start gap-2">
-                      <div className={`mt-0.5 w-4 h-4 rounded-full border-2 flex-shrink-0 flex items-center justify-center ${selected === i ? "border-violet-600 bg-violet-600" : "border-gray-300"}`}>
-                        {selected === i && <Check className="w-2.5 h-2.5 text-white" />}
-                      </div>
-                      <p className="line-clamp-3 text-gray-700">{v.contentText}</p>
-                    </div>
-                  </button>
-                ))}
-              </div>
+                    <span>{v.contentText.split(" ").length} words</span>
+                  </div>
+                </button>
+              ))}
             </div>
           )}
         </div>
 
-        {/* Right — editor */}
-        <div className="space-y-5">
-          <div className="bg-white rounded-xl border p-5">
-            <p className="text-sm font-medium mb-2">Edit post</p>
+        {/* Right — brand voice + edit + schedule */}
+        <div className="space-y-4">
+          {/* Brand voice */}
+          {client?.brandVoice && (
+            <div
+              className="rounded-xl p-5"
+              style={{ background: "var(--paper)", border: "1px solid var(--line)", boxShadow: "var(--shadow-edge)" }}
+            >
+              <h3 className="font-display text-[16px] font-semibold mb-3">Brand voice</h3>
+              {[
+                { label: "Tone",      val: client.brandVoice.tone },
+                { label: "Audience",  val: client.brandVoice.targetAudience },
+                { label: "CTA style", val: client.brandVoice.callToActionStyle },
+              ].map(({ label, val }) => val && (
+                <div key={label} className="py-2.5" style={{ borderBottom: "1px dashed var(--line)" }}>
+                  <div className="text-[11px] font-medium uppercase tracking-[0.08em] mb-1" style={{ color: "var(--ink-3)" }}>{label}</div>
+                  <div className="text-[14px]" style={{ color: "var(--ink-2)" }}>{val}</div>
+                </div>
+              ))}
+              {client.brandVoice.bannedWords?.length > 0 && (
+                <div className="py-2.5">
+                  <div className="text-[11px] font-medium uppercase tracking-[0.08em] mb-1" style={{ color: "var(--ink-3)" }}>Banned</div>
+                  <div className="flex flex-wrap gap-1">
+                    {client.brandVoice.bannedWords.map((w: string) => (
+                      <span key={w} className="text-[12px] px-2.5 py-0.5 rounded-full line-through" style={{ background: "var(--rust-soft)", color: "var(--rust-ink)" }}>{w}</span>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* Edit content */}
+          <div
+            className="rounded-xl p-5"
+            style={{ background: "var(--paper)", border: "1px solid var(--line)", boxShadow: "var(--shadow-edge)" }}
+          >
+            <h3 className="font-display text-[16px] font-semibold mb-3">Edit post</h3>
             <textarea
               value={editedContent}
-              onChange={(e) => setEditedContent(e.target.value)}
-              rows={10}
-              className="w-full border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-violet-500 resize-none"
-              placeholder="Your post content will appear here after generation, or type directly…"
+              onChange={(e) => setEdited(e.target.value)}
+              rows={8}
+              className="w-full rounded-lg px-3.5 py-3 text-[14px] leading-[1.55] resize-none outline-none transition-shadow"
+              placeholder="Post content will appear here after generation, or type directly…"
+              style={{
+                background: "var(--sand)",
+                border: "1px solid var(--line)",
+                color: "var(--ink)",
+                fontFamily: "'Geist', sans-serif",
+              }}
+              onFocus={(e) => (e.currentTarget.style.borderColor = "var(--ink)")}
+              onBlur={(e) => (e.currentTarget.style.borderColor = "var(--line)")}
             />
             {versions[selected]?.hashtags?.length > 0 && (
-              <div className="flex flex-wrap gap-1.5 mt-3">
+              <div className="flex flex-wrap gap-1.5 mt-2.5">
                 {versions[selected].hashtags.map((h: string) => (
-                  <span key={h} className="text-xs bg-violet-50 text-violet-600 px-2 py-1 rounded-md">
+                  <span key={h} className="text-[12px] px-2.5 py-0.5 rounded-full" style={{ background: "var(--sky-soft)", color: "var(--sky-ink)" }}>
                     #{h}
                   </span>
                 ))}
@@ -176,18 +262,21 @@ export default function ComposePage({ params }: { params: { clientId: string } }
             )}
           </div>
 
-          <div className="flex gap-3">
+          {/* Submit */}
+          <div className="flex gap-2">
             <button
               onClick={() => handleSubmit("DRAFT")}
               disabled={submitting || !editedContent.trim()}
-              className="flex-1 border border-gray-200 text-gray-700 rounded-lg py-2.5 text-sm font-medium hover:bg-gray-50 disabled:opacity-50"
+              className="flex-1 text-sm font-medium h-10 rounded-lg disabled:opacity-40"
+              style={{ background: "var(--paper)", color: "var(--ink-2)", border: "1px solid var(--line)" }}
             >
-              Save as draft
+              Save draft
             </button>
             <button
               onClick={() => handleSubmit("PENDING_APPROVAL")}
               disabled={submitting || !editedContent.trim()}
-              className="flex-1 bg-violet-600 text-white rounded-lg py-2.5 text-sm font-medium hover:bg-violet-700 disabled:opacity-50"
+              className="flex-1 text-sm font-semibold h-10 rounded-lg disabled:opacity-40"
+              style={{ background: "var(--gold-cta)", color: "var(--gold-cta-ink)" }}
             >
               {submitting ? "Submitting…" : "Submit for approval"}
             </button>

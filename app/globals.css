@@ -1,31 +1,98 @@
+@import url('https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,600;12..96,700&family=Geist:wght@300;400;500;600;700&family=Geist+Mono:wght@400;500;600&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-@layer base {
-  :root {
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
-    --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --primary: 246 83% 60%;
-    --primary-foreground: 210 40% 98%;
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
-    --ring: 246 83% 60%;
-    --radius: 0.5rem;
-  }
+:root {
+  /* Surface */
+  --paper:  #FFFCF6;
+  --cream:  #FAF6EE;
+  --sand:   #F1ECE0;
+  --fog:    #E4DECF;
+  --line:   rgba(14, 16, 20, 0.14);
+  --line-strong: rgba(14, 16, 20, 0.22);
+
+  /* Ink */
+  --ink:    #0E1014;
+  --ink-2:  #2A2D33;
+  --ink-3:  #5C616A;
+  --ink-4:  #8C9099;
+  --ink-5:  #B7BAC1;
+  --ink-on: #FFFCF6;
+
+  /* Signals */
+  --gold-cta:       #FFEA00;
+  --gold-cta-press: #E6D200;
+  --gold-cta-soft:  #FFF7B0;
+  --gold-cta-ink:   #332800;
+
+  --sky:       #2E6FE6;
+  --sky-soft:  #DCE7FB;
+  --sky-ink:   #0E2E69;
+
+  --plum:      #A33A8E;
+  --plum-soft: #F1DAEC;
+  --plum-ink:  #4A1641;
+
+  --sage:      #2F7D5C;
+  --sage-soft: #D5E7DC;
+  --sage-ink:  #143626;
+
+  --rust:      #B0381C;
+  --rust-soft: #F4D8CD;
+  --rust-ink:  #561508;
+
+  --pending:      #B68A1C;
+  --pending-soft: #F1E5C0;
+  --pending-ink:  #4A370A;
+
+  /* Interactions */
+  --row-hover: rgba(14, 16, 20, 0.04);
+  --row-press: rgba(14, 16, 20, 0.07);
+
+  /* Shadows */
+  --shadow-1: 0 1px 2px rgba(20, 14, 6, 0.05), 0 2px 6px rgba(20, 14, 6, 0.06);
+  --shadow-2: 0 2px 4px rgba(20, 14, 6, 0.06), 0 12px 28px rgba(20, 14, 6, 0.10);
+  --shadow-edge: inset 0 1px 0 rgba(255, 252, 246, 0.7);
 }
 
 @layer base {
-  * { @apply border-border; }
-  body { @apply bg-background text-foreground; }
+  * { box-sizing: border-box; }
+  body {
+    background: var(--cream);
+    color: var(--ink);
+    font-family: 'Geist', 'Helvetica Neue', Arial, sans-serif;
+    font-size: 15px;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Bricolage Grotesque', 'Times New Roman', serif;
+    font-weight: 600;
+    margin: 0;
+  }
+}
+
+/* Status chip utilities */
+@layer components {
+  .chip {
+    @apply inline-flex items-center gap-1.5 h-[22px] px-[10px] rounded-full text-xs font-medium whitespace-nowrap;
+  }
+  .chip-dot {
+    @apply w-1.5 h-1.5 rounded-full flex-shrink-0;
+  }
+  .chip-draft     { background: var(--sand); color: var(--ink-3); }
+  .chip-draft .chip-dot { background: var(--ink-4); }
+  .chip-pending   { background: var(--pending-soft); color: var(--pending-ink); }
+  .chip-pending .chip-dot { background: var(--pending); }
+  .chip-approved  { background: var(--sky-soft); color: var(--sky-ink); }
+  .chip-approved .chip-dot { background: var(--sky); }
+  .chip-scheduled { background: var(--sky-soft); color: var(--sky-ink); }
+  .chip-scheduled .chip-dot { background: var(--sky); }
+  .chip-published { background: var(--sage-soft); color: var(--sage-ink); }
+  .chip-published .chip-dot { background: var(--sage); }
+  .chip-failed    { background: var(--rust-soft); color: var(--rust-ink); }
+  .chip-failed .chip-dot { background: var(--rust); }
 }
