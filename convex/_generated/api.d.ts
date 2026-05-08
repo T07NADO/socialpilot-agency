@@ -13,7 +13,9 @@ import type * as ai from "../ai.js";
 import type * as analytics from "../analytics.js";
 import type * as clients from "../clients.js";
 import type * as engagement from "../engagement.js";
+import type * as linkedin from "../linkedin.js";
 import type * as posts from "../posts.js";
+import type * as socialAccounts from "../socialAccounts.js";
 
 import type {
   ApiFromModules,
@@ -27,7 +29,9 @@ declare const fullApi: ApiFromModules<{
   analytics: typeof analytics;
   clients: typeof clients;
   engagement: typeof engagement;
+  linkedin: typeof linkedin;
   posts: typeof posts;
+  socialAccounts: typeof socialAccounts;
 }>;
 
 /**

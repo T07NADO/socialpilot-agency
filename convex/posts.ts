@@ -1,4 +1,4 @@
-import { mutation, query, internalMutation } from "./_generated/server";
+import { mutation, query, internalMutation, internalQuery } from "./_generated/server";
 import { internal } from "./_generated/api";
 import { v } from "convex/values";
 
@@ -19,11 +19,10 @@ export const listByClient = query({
     const identity = await ctx.auth.getUserIdentity();
     if (!identity) return [];
 
-    let postsQuery = ctx.db
+    const posts = await ctx.db
       .query("posts")
-      .withIndex("by_client", (q: any) => q.eq("clientId", args.clientId));
-
-    const posts = await postsQuery.collect();
+      .withIndex("by_client", (q: any) => q.eq("clientId", args.clientId))
+      .collect();
     return args.status
       ? posts.filter((p: any) => p.status === args.status)
       : posts;
@@ -63,10 +62,7 @@ export const create = mutation({
     platform: v.union(v.literal("LINKEDIN"), v.literal("INSTAGRAM")),
     contentText: v.string(),
     hashtags: v.array(v.string()),
-    status: v.union(
-      v.literal("DRAFT"),
-      v.literal("PENDING_APPROVAL")
-    ),
+    status: v.union(v.literal("DRAFT"), v.literal("PENDING_APPROVAL")),
   },
   handler: async (ctx, args) => {
     const agency = await getAgency(ctx);
@@ -109,16 +105,19 @@ export const schedule = mutation({
     const post = await ctx.db.get(args.postId);
     if (!post || post.agencyId !== agency._id) throw new Error("Not found");
 
-    // Cancel existing job if rescheduling
     if (post.scheduledJobId) {
       await ctx.scheduler.cancel(post.scheduledJobId);
     }
 
-    const jobId = await ctx.scheduler.runAt(
-      args.scheduledAt,
-      internal.posts.publishScheduled,
-      { postId: args.postId }
-    );
+    // Dispatch to the right platform publisher
+    const publishFn =
+      post.platform === "LINKEDIN"
+        ? internal.linkedin.publishPost
+        : internal.linkedin.publishPost; // Instagram placeholder until implemented
+
+    const jobId = await ctx.scheduler.runAt(args.scheduledAt, publishFn, {
+      postId: args.postId,
+    });
 
     await ctx.db.patch(args.postId, {
       status: "SCHEDULED",
@@ -187,17 +186,31 @@ export const update = mutation({
   },
 });
 
-// Internal: called by Convex scheduler at the scheduled time
-export const publishScheduled = internalMutation({
+// ── Internal helpers used by platform publish actions ──────────────────────
+
+export const getById = internalQuery({
   args: { postId: v.id("posts") },
+  handler: async (ctx, args) => ctx.db.get(args.postId),
+});
+
+export const markPublished = internalMutation({
+  args: { postId: v.id("posts"), platformPostId: v.string() },
   handler: async (ctx, args) => {
-    const post = await ctx.db.get(args.postId);
-    if (!post || post.status !== "SCHEDULED") return;
-    // In production this would call the LinkedIn/Instagram API
-    // For now mark as published
     await ctx.db.patch(args.postId, {
       status: "PUBLISHED",
       publishedAt: Date.now(),
+      platformPostId: args.platformPostId,
+      scheduledJobId: undefined,
+    });
+  },
+});
+
+export const markFailed = internalMutation({
+  args: { postId: v.id("posts"), error: v.string() },
+  handler: async (ctx, args) => {
+    console.error(`Post ${args.postId} failed: ${args.error}`);
+    await ctx.db.patch(args.postId, {
+      status: "FAILED",
       scheduledJobId: undefined,
     });
   },
