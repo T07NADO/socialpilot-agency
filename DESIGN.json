@@ -1,0 +1,152 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-05-08T00:00:00Z",
+  "title": "Design System: SocialPilot Agency",
+  "extensions": {
+    "colorMeta": {
+      "paper":         { "role": "neutral",   "displayName": "Antique Paper White",  "canonical": "#FFFCF6", "tonalRamp": ["#2a2720","#3e3a31","#544f43","#6e6758","#8a8270","#b0a892","#d4cec2","#FFFCF6"] },
+      "cream":         { "role": "neutral",   "displayName": "Warm Cream Canvas",    "canonical": "#FAF6EE", "tonalRamp": ["#292520","#3d3930","#524d43","#6b6558","#888070","#ada690","#d2cdbf","#FAF6EE"] },
+      "sand":          { "role": "neutral",   "displayName": "Linen Sand",           "canonical": "#F1ECE0", "tonalRamp": ["#26221c","#3a3630","#4f4a43","#666059","#837c70","#a59f90","#c9c4b8","#F1ECE0"] },
+      "fog":           { "role": "neutral",   "displayName": "Warm Fog",             "canonical": "#E4DECF", "tonalRamp": ["#211f1a","#35332e","#4a4741","#615e57","#7e7a72","#9e9a92","#c2beb5","#E4DECF"] },
+      "ink":           { "role": "primary",   "displayName": "Almost-Black Ink",     "canonical": "#0E1014", "tonalRamp": ["#0E1014","#1a1d24","#2a2d33","#3e4249","#5c616a","#8c9099","#b7bac1","#e8e9eb"] },
+      "gold-cta":      { "role": "primary",   "displayName": "Citrus Signal Yellow", "canonical": "#FFEA00", "tonalRamp": ["#332800","#4a3a00","#665200","#8c7000","#b39200","#d4b400","#e6d200","#FFEA00"] },
+      "sky":           { "role": "secondary", "displayName": "Cobalt Sky",           "canonical": "#2E6FE6", "tonalRamp": ["#0a1a40","#0e2e69","#1845a0","#2358c8","#2E6FE6","#5c8feb","#9cb8f4","#DCE7FB"] },
+      "sage":          { "role": "secondary", "displayName": "Forest Sage",          "canonical": "#2F7D5C", "tonalRamp": ["#0a1e16","#143626","#1e5038","#286a4a","#2F7D5C","#52a07c","#8cc4a6","#D5E7DC"] },
+      "rust":          { "role": "secondary", "displayName": "Terra Rust",           "canonical": "#B0381C", "tonalRamp": ["#2a0d06","#561508","#7a2010","#962c16","#B0381C","#cc5c3e","#e09484","#F4D8CD"] },
+      "gold":          { "role": "secondary", "displayName": "Amber Gold",           "canonical": "#B68A1C", "tonalRamp": ["#28200a","#4a370a","#6a5010","#8a6914","#B68A1C","#d4a830","#e8c870","#F1E5C0"] },
+      "plum":          { "role": "tertiary",  "displayName": "Deep Plum",            "canonical": "#A33A8E", "tonalRamp": ["#280c22","#4a1641","#6a2060","#882e7a","#A33A8E","#c060a8","#d898cb","#F1DAEC"] },
+      "linkedin":      { "role": "tertiary",  "displayName": "LinkedIn Blue",        "canonical": "#0A66C2", "tonalRamp": ["#021428","#063a72","#0a50a0","#0a5cb8","#0A66C2","#2882d4","#6aaee8","#c4dcf4"] }
+    },
+    "typographyMeta": {
+      "display": { "displayName": "Display",    "purpose": "Hero moments only. Page-level greetings, dashboard headlines. One per screen." },
+      "h1":      { "displayName": "Page Title", "purpose": "Primary page title. One per route." },
+      "h2":      { "displayName": "Section Head","purpose": "Named sections within a page. Used sparingly." },
+      "h3":      { "displayName": "Card Title", "purpose": "Card titles, panel headings, drawer headers." },
+      "body":    { "displayName": "Body",       "purpose": "All paragraph text and description copy. Max 65–75ch in reading contexts." },
+      "label":   { "displayName": "Label",      "purpose": "Form labels, table column headers, section eyebrows." },
+      "mono":    { "displayName": "Mono",       "purpose": "IDs, timestamps, scheduled times, post slugs, keyboard shortcuts." }
+    },
+    "shadows": [
+      { "name": "edge",     "value": "inset 0 1px 0 rgba(255, 252, 246, 0.7)",                                              "purpose": "Top-edge inner highlight on card faces. Applied to all cards at rest." },
+      { "name": "shadow-1", "value": "0 1px 2px rgba(20, 14, 6, 0.05), 0 2px 6px rgba(20, 14, 6, 0.06)",                  "purpose": "Sticky topbar, dropdown menus, hover-lifted cards." },
+      { "name": "shadow-2", "value": "0 2px 4px rgba(20, 14, 6, 0.06), 0 12px 28px rgba(20, 14, 6, 0.10)",                "purpose": "Floating panels, modals, sheet overlays." },
+      { "name": "inset",    "value": "inset 0 1px 2px rgba(20, 14, 6, 0.10)",                                               "purpose": "Pressed button active state. Surface dents in on click." }
+    ],
+    "motion": [
+      { "name": "ease-out", "value": "cubic-bezier(0.2, 0.8, 0.2, 1)", "purpose": "State transitions, hover reveals, panel opens." },
+      { "name": "ease-std", "value": "cubic-bezier(0.4, 0.0, 0.2, 1)", "purpose": "Standard Material-style ease for general transitions." },
+      { "name": "dur-fast", "value": "150ms", "purpose": "Button state changes, hover tints." },
+      { "name": "dur-med",  "value": "220ms", "purpose": "Panel slides, dropdown reveals." },
+      { "name": "dur-slow", "value": "320ms", "purpose": "Modal entrance, sheet overlays." }
+    ],
+    "breakpoints": [
+      { "name": "sidebar-collapse", "value": "1024px", "purpose": "Below this width, the 240px sidebar should collapse to an icon rail or offcanvas." }
+    ]
+  },
+  "components": [
+    {
+      "name": "Button Accent (Gold CTA)",
+      "kind": "button",
+      "refersTo": "button-accent",
+      "description": "The single primary action per screen. Approve, Generate, Submit. One per screen maximum.",
+      "html": "<button class=\"ds-btn-accent\">Approve &amp; schedule</button>",
+      "css": ".ds-btn-accent { display: inline-flex; align-items: center; gap: 8px; height: 36px; padding: 0 14px; background: #FFEA00; color: #1A1306; border: 1px solid transparent; border-radius: 8px; font-family: 'Geist', 'Helvetica Neue', Arial, sans-serif; font-size: 14px; font-weight: 600; letter-spacing: -0.005em; cursor: pointer; white-space: nowrap; transition: background 150ms cubic-bezier(0.2,0.8,0.2,1), transform 150ms cubic-bezier(0.2,0.8,0.2,1); } .ds-btn-accent:hover { background: #E6D200; color: #FFFCF6; } .ds-btn-accent:active { background: #ccbb00; box-shadow: inset 0 1px 2px rgba(20,14,6,0.10); } .ds-btn-accent:focus-visible { outline: 2px solid #FFEA00; outline-offset: 2px; } .ds-btn-accent:disabled { opacity: 0.45; cursor: not-allowed; }"
+    },
+    {
+      "name": "Button Primary (Ink)",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "Secondary-tier CTA. Save, Connect, Confirm. Multiple per screen allowed.",
+      "html": "<button class=\"ds-btn-primary\">Save draft</button>",
+      "css": ".ds-btn-primary { display: inline-flex; align-items: center; gap: 8px; height: 36px; padding: 0 14px; background: #0E1014; color: #FFFCF6; border: 1px solid transparent; border-radius: 8px; font-family: 'Geist', 'Helvetica Neue', Arial, sans-serif; font-size: 14px; font-weight: 500; letter-spacing: -0.005em; cursor: pointer; white-space: nowrap; transition: background 150ms cubic-bezier(0.2,0.8,0.2,1); } .ds-btn-primary:hover { background: #1A1D24; } .ds-btn-primary:active { background: #060708; box-shadow: inset 0 1px 2px rgba(20,14,6,0.10); } .ds-btn-primary:focus-visible { outline: 2px solid #0E1014; outline-offset: 2px; } .ds-btn-primary:disabled { opacity: 0.45; cursor: not-allowed; }"
+    },
+    {
+      "name": "Button Secondary",
+      "kind": "button",
+      "refersTo": "button-secondary",
+      "description": "Supporting actions. Cancel, Edit, Back. Never competes with the primary tier.",
+      "html": "<button class=\"ds-btn-secondary\">Cancel</button>",
+      "css": ".ds-btn-secondary { display: inline-flex; align-items: center; gap: 8px; height: 36px; padding: 0 14px; background: #FFFCF6; color: #0E1014; border: 1px solid rgba(14,16,20,0.14); border-radius: 8px; font-family: 'Geist', 'Helvetica Neue', Arial, sans-serif; font-size: 14px; font-weight: 500; letter-spacing: -0.005em; cursor: pointer; white-space: nowrap; transition: background 150ms cubic-bezier(0.2,0.8,0.2,1); } .ds-btn-secondary:hover { background: #F1ECE0; } .ds-btn-secondary:focus-visible { outline: 2px solid #0E1014; outline-offset: 2px; } .ds-btn-secondary:disabled { opacity: 0.45; cursor: not-allowed; }"
+    },
+    {
+      "name": "Status Chip — Pending",
+      "kind": "chip",
+      "refersTo": "chip-pending",
+      "description": "Post awaiting approval. Part of the lifecycle sequence: draft → pending → approved/scheduled → published.",
+      "html": "<span class=\"ds-chip ds-chip-pending\"><span class=\"ds-chip-dot\"></span>Pending approval</span>",
+      "css": ".ds-chip { display: inline-flex; align-items: center; gap: 6px; height: 22px; padding: 0 10px; border-radius: 999px; font-family: 'Geist', 'Helvetica Neue', Arial, sans-serif; font-size: 12px; font-weight: 500; letter-spacing: -0.005em; white-space: nowrap; } .ds-chip-dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; } .ds-chip-pending { background: #F1E5C0; color: #4A370A; } .ds-chip-pending .ds-chip-dot { background: #B68A1C; } .ds-chip-published { background: #D5E7DC; color: #143626; } .ds-chip-published .ds-chip-dot { background: #2F7D5C; } .ds-chip-approved { background: #DCE7FB; color: #0E2E69; } .ds-chip-approved .ds-chip-dot { background: #2E6FE6; } .ds-chip-failed { background: #F4D8CD; color: #561508; } .ds-chip-failed .ds-chip-dot { background: #B0381C; } .ds-chip-draft { background: #F1ECE0; color: #2A2D33; } .ds-chip-draft .ds-chip-dot { background: #8C9099; }"
+    },
+    {
+      "name": "Card",
+      "kind": "card",
+      "refersTo": "card",
+      "description": "Primary container for client tiles, post rows, queue panels, and stat blocks.",
+      "html": "<div class=\"ds-card\"><div class=\"ds-card-title\">Acme Bakery</div><div class=\"ds-card-meta\">4 posts pending review</div></div>",
+      "css": ".ds-card { background: #FFFCF6; border: 1px solid rgba(14,16,20,0.14); border-radius: 12px; box-shadow: inset 0 1px 0 rgba(255,252,246,0.7); padding: 20px; transition: box-shadow 150ms cubic-bezier(0.2,0.8,0.2,1); } .ds-card:hover { box-shadow: 0 1px 2px rgba(20,14,6,0.05), 0 2px 6px rgba(20,14,6,0.06); } .ds-card-title { font-family: 'Bricolage Grotesque', 'Times New Roman', serif; font-weight: 600; font-size: 20px; letter-spacing: -0.012em; color: #0E1014; margin: 0 0 4px; } .ds-card-meta { font-family: 'Geist', 'Helvetica Neue', Arial, sans-serif; font-size: 13px; color: #5C616A; }"
+    },
+    {
+      "name": "Input Field",
+      "kind": "input",
+      "refersTo": "input",
+      "description": "Standard text input. Used in all forms: client name, brand voice, search.",
+      "html": "<div class=\"ds-field\"><label class=\"ds-label\">Client name</label><input class=\"ds-input\" type=\"text\" placeholder=\"Acme Bakery\" /></div>",
+      "css": ".ds-field { display: flex; flex-direction: column; gap: 6px; } .ds-label { font-family: 'Geist', 'Helvetica Neue', Arial, sans-serif; font-size: 12px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; color: #5C616A; } .ds-input { font-family: 'Geist', 'Helvetica Neue', Arial, sans-serif; font-size: 14px; color: #0E1014; background: #FFFCF6; border: 1px solid rgba(14,16,20,0.14); border-radius: 6px; padding: 8px 12px; height: 36px; outline: none; transition: border-color 150ms, box-shadow 150ms; } .ds-input::placeholder { color: #8C9099; } .ds-input:focus { border-color: #0E1014; box-shadow: 0 0 0 3px rgba(14,16,20,0.08); } .ds-input:disabled { opacity: 0.6; cursor: default; }"
+    },
+    {
+      "name": "Navigation Item",
+      "kind": "nav",
+      "refersTo": null,
+      "description": "Sidebar nav link. Three states: default, hover, active. Active uses full ink background.",
+      "html": "<nav class=\"ds-nav-shell\"><a class=\"ds-nav-item\" href=\"#\"><svg width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.75\"><path d=\"M20 6 9 17l-5-5\"/></svg><span>Approvals</span><span class=\"ds-nav-badge\">3</span></a><a class=\"ds-nav-item ds-nav-active\" href=\"#\"><svg width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.75\"><circle cx=\"12\" cy=\"8\" r=\"4\"/><path d=\"M4 21v-1a8 8 0 0 1 16 0v1\"/></svg><span>Clients</span></a></nav>",
+      "css": ".ds-nav-shell { display: flex; flex-direction: column; gap: 2px; padding: 8px; } .ds-nav-item { display: flex; align-items: center; gap: 10px; padding: 7px 10px; border-radius: 6px; font-family: 'Geist', 'Helvetica Neue', Arial, sans-serif; font-size: 14px; font-weight: 500; color: #5C616A; text-decoration: none; transition: background 150ms, color 150ms; } .ds-nav-item:hover { background: rgba(14,16,20,0.04); color: #0E1014; } .ds-nav-active { background: #0E1014; color: #FFFCF6; } .ds-nav-active:hover { background: #1A1D24; color: #FFFCF6; } .ds-nav-badge { margin-left: auto; background: #FFEA00; color: #1A1306; font-family: 'Geist Mono', ui-monospace, monospace; font-size: 11px; padding: 1px 6px; border-radius: 999px; line-height: 1.4; }"
+    },
+    {
+      "name": "Eyebrow Label",
+      "kind": "custom",
+      "refersTo": null,
+      "description": "Section category markers. Adds hierarchy before a heading without competing with it.",
+      "html": "<div class=\"ds-eyebrow\">Clients</div>",
+      "css": ".ds-eyebrow { font-family: 'Geist', 'Helvetica Neue', Arial, sans-serif; font-size: 11px; font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase; color: #5C616A; }"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Agency Workbench",
+    "overview": "SocialPilot is a workbench, not a brochure. Every surface is warm, functional, and unhurried. The palette is derived from old paper and natural linen — cream grounds, parchment whites, sand fills — with a single sharp signal in citrus yellow for the one action that matters most on any given screen. It is the visual equivalent of a well-organized desk: nothing demands attention, everything is exactly where it should be.\n\nThe system is built for sustained focus. Freelancers spending hours inside this tool should feel calm, not stimulated. Agency teams with competing priorities should be able to scan quickly and act without hunting. Density is managed by generous internal whitespace and a strict typographic hierarchy — the eye is guided, never pushed.",
+    "keyCharacteristics": [
+      "Warm cream-to-parchment surface stack with a single yellow accent",
+      "Bricolage Grotesque display headings contrasted with Geist body text",
+      "Shadows cast warm, not cold: rgba(20, 14, 6, ...) throughout",
+      "Status chips carry semantic color; everything else is ink on warm neutral",
+      "Buttons follow a strict three-tier hierarchy: yellow CTA, ink primary, sand secondary"
+    ],
+    "rules": [
+      { "name": "The Ten Percent Rule",      "body": "The citrus yellow (#FFEA00) appears on no more than 10% of any given screen surface. It is used only for the single primary action per screen. Every other CTA uses ink. A screen with two yellow buttons has failed.", "section": "colors" },
+      { "name": "The Warm Shadow Rule",      "body": "All shadows use rgba(20, 14, 6, ...) as their base — brown-warm, not grey-cold. Never rgba(0, 0, 0, ...).", "section": "elevation" },
+      { "name": "The Flat-By-Default Rule",  "body": "Cards rest flat with only the edge highlight. Shadow-1 appears on hover for clickable cards. If a surface doesn't lift in response to an action, it doesn't get a shadow.", "section": "elevation" },
+      { "name": "The Contrast Rule",         "body": "The minimum size jump between adjacent hierarchy levels is 1.25x. A 13px label next to a 13px body is invisible hierarchy.", "section": "typography" },
+      { "name": "The Mono Rule",             "body": "Times and IDs always render in Geist Mono with font-variant-numeric: tabular-nums. A post queue where scheduled times shift width as you scan is a broken queue.", "section": "typography" }
+    ],
+    "dos": [
+      "Use citrus yellow (#FFEA00) for exactly one primary action per screen. Its power is its rarity.",
+      "Use the four-step surface stack (cream canvas → paper card → sand fill → fog divider) to communicate containment without shadows.",
+      "Render times, IDs, post slugs, and tabular numbers in Geist Mono with font-variant-numeric: tabular-nums.",
+      "Use Bricolage Grotesque's variable axes: wdth 92, opsz 96 at display size; relax toward wdth 96–100 at H1–H3.",
+      "Cast shadows in warm sepia rgba(20, 14, 6, ...), never in neutral grey rgba(0, 0, 0, ...).",
+      "Use the status chip color sequence as a reading direction: draft (neutral) → pending (amber) → approved/scheduled (sky) → published (sage) or failed (rust).",
+      "Keep body text blocks to 65–75ch max width in review and reading contexts."
+    ],
+    "donts": [
+      "Don't use yellow on more than 10% of any screen surface.",
+      "Don't use busy metric cards stacked everywhere with colored gradients — the primary anti-reference for this system.",
+      "Don't stack identical card grids with the same size, icon, heading, and body text pattern.",
+      "Don't use rgba(0, 0, 0, ...) for shadows. Only warm sepia rgba(20, 14, 6, ...) and ink-tinted overlays rgba(14, 16, 20, ...).",
+      "Don't use side-stripe borders (colored border-left wider than 1px) on cards or list items.",
+      "Don't use gradient text (background-clip: text).",
+      "Don't nest cards. A card inside a card is always a layout error.",
+      "Don't use glassmorphism decoratively. The topbar's backdrop-filter is the only legitimate blur.",
+      "Don't manufacture visual urgency. Signal yellow is for action, not alarm.",
+      "Don't use #000000 or #FFFFFF. Every black is #0E1014. Every white is #FFFCF6.",
+      "Don't make the freelancer feel like they need an onboarding checklist. Empty states should be calm and instructive."
+    ]
+  }
+}
