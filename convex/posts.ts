@@ -188,6 +188,19 @@ export const update = mutation({
 
 // ── Internal helpers used by platform publish actions ──────────────────────
 
+export const updateStats = internalMutation({
+  args: {
+    postId: v.id("posts"),
+    likes: v.number(),
+    comments: v.number(),
+    impressions: v.number(),
+  },
+  handler: async (ctx, args) => {
+    const { postId, ...stats } = args;
+    await ctx.db.patch(postId, stats);
+  },
+});
+
 export const getById = internalQuery({
   args: { postId: v.id("posts") },
   handler: async (ctx, args) => ctx.db.get(args.postId),

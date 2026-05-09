@@ -1,13 +1,25 @@
 "use client";
 
-import { useQuery } from "convex/react";
+import { useQuery, useAction } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { Id } from "@/convex/_generated/dataModel";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer } from "recharts";
-import { Heart, MessageCircle, Eye, Send } from "lucide-react";
+import { Heart, MessageCircle, Eye, Send, RefreshCw } from "lucide-react";
+import { useState } from "react";
 
 export default function AnalyticsTab({ clientId }: { clientId: Id<"clients"> }) {
   const stats = useQuery(api.analytics.getClientStats, { clientId });
+  const syncStats = useAction(api.linkedin.syncClientStats);
+  const [syncing, setSyncing] = useState(false);
+
+  async function handleSync() {
+    setSyncing(true);
+    try {
+      await syncStats({ clientId });
+    } finally {
+      setSyncing(false);
+    }
+  }
 
   if (!stats) return <div className="animate-pulse h-48 rounded-xl" style={{ background: "var(--sand)" }} />;
 
@@ -22,6 +34,19 @@ export default function AnalyticsTab({ clientId }: { clientId: Id<"clients"> }) 
 
   return (
     <div className="space-y-5">
+      {/* Sync button */}
+      <div className="flex justify-end">
+        <button
+          onClick={handleSync}
+          disabled={syncing}
+          className="flex items-center gap-2 text-[13px] font-medium h-8 px-3.5 rounded-lg disabled:opacity-40 transition-colors"
+          style={{ background: "var(--paper)", border: "1px solid var(--line)", color: "var(--ink-2)" }}
+        >
+          <RefreshCw className={`w-3.5 h-3.5 ${syncing ? "animate-spin" : ""}`} />
+          {syncing ? "Syncing…" : "Sync from LinkedIn"}
+        </button>
+      </div>
+
       {/* Metric cards */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
         {metrics.map(({ label, value, icon: Icon, color }) => (
