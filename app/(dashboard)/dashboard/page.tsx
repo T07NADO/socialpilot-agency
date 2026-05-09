@@ -75,7 +75,7 @@ export default function DashboardPage() {
             maskImage: "linear-gradient(135deg, transparent 0%, transparent 30%, rgba(0,0,0,0.7) 100%)",
           }}
         />
-        <div className="relative flex justify-between items-end gap-6 px-8 py-7">
+        <div className="relative flex flex-col sm:flex-row sm:justify-between sm:items-end gap-4 px-5 py-5 md:px-8 md:py-7">
           <div>
             <div
               className="text-[11px] font-medium uppercase tracking-[0.12em] mb-2.5"
@@ -83,7 +83,7 @@ export default function DashboardPage() {
             >
               {today}
             </div>
-            <h1 className="font-display text-[38px] font-semibold tracking-[-0.024em] leading-[1.05]">
+            <h1 className="font-display text-[28px] md:text-[38px] font-semibold tracking-[-0.024em] leading-[1.05]">
               {greeting}.
             </h1>
             <p className="text-sm mt-2" style={{ color: "var(--ink-3)", maxWidth: 480 }}>
@@ -92,7 +92,7 @@ export default function DashboardPage() {
                 : "All caught up. Nothing needs review right now."}
             </p>
           </div>
-          <div className="flex gap-2 flex-shrink-0">
+          <div className="flex gap-2 sm:flex-shrink-0">
             <Link
               href="/approvals"
               className="flex items-center gap-2 text-sm font-medium h-9 px-4 rounded-lg"
@@ -112,7 +112,7 @@ export default function DashboardPage() {
       </div>
 
       {/* Stats */}
-      <div className="grid grid-cols-4 gap-3.5 mb-6">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-3.5 mb-6">
         {statCards.map(({ label, value, accent }) => (
           <div
             key={label}
@@ -133,7 +133,7 @@ export default function DashboardPage() {
       </div>
 
       {/* Queue + signals two-col */}
-      <div className="grid gap-5" style={{ gridTemplateColumns: "1fr 320px" }}>
+      <div className="grid grid-cols-1 md:grid-cols-[1fr_320px] gap-5">
         {/* Queue card */}
         <div className="rounded-xl overflow-hidden" style={{ background: "var(--paper)", border: "1px solid var(--line)", boxShadow: "var(--shadow-edge)" }}>
           <div className="flex items-center justify-between px-5 py-4" style={{ borderBottom: "1px solid var(--line)" }}>
