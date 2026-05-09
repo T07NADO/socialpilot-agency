@@ -159,6 +159,65 @@ export const update = mutation({
   },
 });
 
+const intakeFields = {
+  fullName: v.optional(v.string()),
+  roleAndCompany: v.optional(v.string()),
+  dayToDay: v.optional(v.string()),
+  yearsExperience: v.optional(v.string()),
+  backgroundBefore: v.optional(v.string()),
+  uniqueBackground: v.optional(v.string()),
+  linkedinGoals: v.optional(v.array(v.string())),
+  successMeasure: v.optional(v.string()),
+  targetAudience: v.optional(v.string()),
+  audiencePerception: v.optional(v.string()),
+  communicationStyle: v.optional(v.array(v.string())),
+  writingSamples: v.optional(v.string()),
+  commonPhrases: v.optional(v.string()),
+  cringeWords: v.optional(v.string()),
+  resonantPost: v.optional(v.string()),
+  controversialBeliefs: v.optional(v.string()),
+  hardLesson: v.optional(v.string()),
+  wishKnewEarlier: v.optional(v.string()),
+  frequentQuestion: v.optional(v.string()),
+  proudResult: v.optional(v.string()),
+  failureMistake: v.optional(v.string()),
+  cantTalkAbout: v.optional(v.string()),
+  postsPerWeek: v.optional(v.string()),
+  avoidFormats: v.optional(v.array(v.string())),
+  admiredProfiles: v.optional(v.string()),
+  anythingElse: v.optional(v.string()),
+};
+
+export const createWithIntake = mutation({
+  args: { name: v.string(), industry: v.string(), intake: v.object(intakeFields) },
+  handler: async (ctx, args) => {
+    const agency = await getAgency(ctx);
+    const clientId = await ctx.db.insert("clients", {
+      agencyId: agency._id,
+      name: args.name,
+      industry: args.industry,
+      isActive: true,
+    });
+    await ctx.db.insert("clientIntake", { clientId, ...args.intake });
+    for (const ruleType of ["AUTO_REPLY", "AUTO_LIKE", "AUTO_FOLLOW"] as const) {
+      await ctx.db.insert("engagementRules", { clientId, platform: "LINKEDIN", ruleType, enabled: false });
+    }
+    return clientId;
+  },
+});
+
+export const getIntake = query({
+  args: { clientId: v.id("clients") },
+  handler: async (ctx, args) => {
+    const identity = await ctx.auth.getUserIdentity();
+    if (!identity) return null;
+    return ctx.db
+      .query("clientIntake")
+      .withIndex("by_client", (q) => q.eq("clientId", args.clientId))
+      .first();
+  },
+});
+
 export const remove = mutation({
   args: { clientId: v.id("clients") },
   handler: async (ctx, args) => {

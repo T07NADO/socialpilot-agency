@@ -11,11 +11,59 @@ import { ChevronLeft } from "lucide-react";
 
 type Platform = "LINKEDIN";
 
+function buildPersonContext(intake: any): string {
+  const lines: string[] = [];
+  const add = (label: string, val: any) => {
+    if (!val || (Array.isArray(val) && val.length === 0)) return;
+    lines.push(`${label}: ${Array.isArray(val) ? val.join(", ") : val}`);
+  };
+
+  lines.push("You are ghostwriting for a real person. Write in first person, in their voice.");
+  lines.push("");
+  lines.push("ABOUT THIS PERSON:");
+  add("Name", intake.fullName);
+  add("Role", intake.roleAndCompany);
+  add("Day to day", intake.dayToDay);
+  add("Years of experience", intake.yearsExperience);
+  add("Background before current role", intake.backgroundBefore);
+  add("Unique background", intake.uniqueBackground);
+  lines.push("");
+  lines.push("LINKEDIN STRATEGY:");
+  add("Goals", intake.linkedinGoals);
+  add("What success looks like", intake.successMeasure);
+  add("Target audience", intake.targetAudience);
+  add("What audience currently thinks", intake.audiencePerception);
+  lines.push("");
+  lines.push("VOICE AND TONE:");
+  add("Communication style", intake.communicationStyle);
+  add("Words and phrases they naturally use", intake.commonPhrases);
+  add("Language to avoid", intake.cringeWords);
+  if (intake.writingSamples) {
+    lines.push("");
+    lines.push("REAL WRITING SAMPLES (match this voice exactly):");
+    lines.push(intake.writingSamples);
+  }
+  lines.push("");
+  lines.push("EXPERTISE AND BELIEFS:");
+  add("Controversial opinions about their field", intake.controversialBeliefs);
+  add("Hard lesson learned", intake.hardLesson);
+  add("What they know now vs 3 years ago", intake.wishKnewEarlier);
+  add("What people ask them most", intake.frequentQuestion);
+  add("Proud result", intake.proudResult);
+  lines.push("");
+  lines.push("CONSTRAINTS:");
+  add("Cannot talk about publicly", intake.cantTalkAbout);
+  add("Content formats to avoid", intake.avoidFormats);
+
+  return lines.join("\n");
+}
+
 export default function ComposePage({ params }: { params: { clientId: string } }) {
   const clientId = params.clientId as Id<"clients">;
   const router = useRouter();
 
   const client = useQuery(api.clients.get, { clientId });
+  const intake = useQuery(api.clients.getIntake, { clientId });
   const generatePost = useAction(api.ai.generatePost);
   const createPost   = useMutation(api.posts.create);
 
@@ -31,12 +79,14 @@ export default function ComposePage({ params }: { params: { clientId: string } }
     if (!brief.trim() || !client) return;
     setGenerating(true);
     try {
+      const personContext = intake ? buildPersonContext(intake) : undefined;
       const result = await generatePost({
         clientName: client.name,
         industry:   client.industry,
         platform,
         brief,
         brandVoice: client.brandVoice ?? undefined,
+        personContext,
       });
       const v = result.versions ?? [];
       setVersions(v);
