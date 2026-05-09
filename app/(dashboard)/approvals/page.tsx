@@ -6,6 +6,7 @@ import { Id } from "@/convex/_generated/dataModel";
 import { useState } from "react";
 import Image from "next/image";
 import { formatDistanceToNow } from "date-fns";
+import { ChevronLeft } from "lucide-react";
 
 function ClientAvatar({ name, size = 28 }: { name: string; size?: number }) {
   const initials = name.split(" ").map((w) => w[0]).join("").slice(0, 2).toUpperCase();
@@ -25,23 +26,35 @@ export default function ApprovalsPage() {
   const approve = useMutation(api.posts.approve);
   const reject  = useMutation(api.posts.reject);
   const [selected, setSelected] = useState<string | null>(null);
+  const [mobileView, setMobileView] = useState<"list" | "detail">("list");
 
   const selectedPost = posts?.find((p: any) => p._id === selected) ?? posts?.[0] ?? null;
 
+  function handleSelect(id: string) {
+    setSelected(id);
+    setMobileView("detail");
+  }
+
+  function handleBack() {
+    setMobileView("list");
+  }
+
   return (
     <div
-      className="rounded-xl overflow-hidden"
+      className="rounded-xl overflow-hidden md:grid"
       style={{
         background: "var(--paper)",
         border: "1px solid var(--line)",
         boxShadow: "var(--shadow-edge)",
-        display: "grid",
         gridTemplateColumns: "300px 1fr",
         minHeight: "calc(100vh - 128px)",
       }}
     >
-      {/* Inbox */}
-      <div style={{ borderRight: "1px solid var(--line)" }}>
+      {/* Inbox — hidden on mobile when detail is open */}
+      <div
+        className={`${mobileView === "detail" ? "hidden md:block" : "block"}`}
+        style={{ borderRight: "1px solid var(--line)" }}
+      >
         <div
           className="flex items-center justify-between px-5 py-4"
           style={{ borderBottom: "1px solid var(--line)" }}
@@ -72,7 +85,7 @@ export default function ApprovalsPage() {
             return (
               <button
                 key={post._id}
-                onClick={() => setSelected(post._id)}
+                onClick={() => handleSelect(post._id)}
                 className="w-full text-left grid items-start gap-2.5 px-5 py-3.5 transition-colors"
                 style={{
                   gridTemplateColumns: "28px 1fr auto",
@@ -99,8 +112,20 @@ export default function ApprovalsPage() {
         )}
       </div>
 
-      {/* Review panel */}
-      <div className="p-8" style={{ background: "var(--cream)" }}>
+      {/* Review panel — hidden on mobile when list is shown */}
+      <div
+        className={`${mobileView === "list" ? "hidden md:block" : "block"} p-5 md:p-8`}
+        style={{ background: "var(--cream)" }}
+      >
+        {/* Mobile back button */}
+        <button
+          onClick={handleBack}
+          className="md:hidden flex items-center gap-1.5 text-[13px] font-medium mb-5"
+          style={{ color: "var(--ink-3)" }}
+        >
+          <ChevronLeft className="w-4 h-4" /> All approvals
+        </button>
+
         {!selectedPost ? (
           <div className="h-full flex items-center justify-center text-[14px]" style={{ color: "var(--ink-4)" }}>
             Select a post to review
@@ -122,7 +147,7 @@ export default function ApprovalsPage() {
 
             {/* Post shell */}
             <div
-              className="rounded-xl p-6 mb-5 max-w-2xl"
+              className="rounded-xl p-5 md:p-6 mb-5 max-w-2xl"
               style={{ background: "var(--paper)", border: "1px solid var(--line)", boxShadow: "var(--shadow-edge)" }}
             >
               <div className="flex items-center gap-3 mb-4">
@@ -141,7 +166,7 @@ export default function ApprovalsPage() {
               </div>
 
               <p
-                className="text-[16px] leading-[1.6] whitespace-pre-wrap mb-4"
+                className="text-[15px] md:text-[16px] leading-[1.6] whitespace-pre-wrap mb-4"
                 style={{ color: "var(--ink)" }}
               >
                 {selectedPost.contentText}
@@ -155,23 +180,23 @@ export default function ApprovalsPage() {
             </div>
 
             {/* Actions */}
-            <div className="flex gap-2.5 max-w-2xl">
+            <div className="flex flex-wrap gap-2.5 max-w-2xl">
               <button
-                onClick={() => approve({ postId: selectedPost._id as Id<"posts"> })}
+                onClick={() => { approve({ postId: selectedPost._id as Id<"posts"> }); handleBack(); }}
                 className="flex items-center gap-2 text-sm font-semibold h-10 px-5 rounded-lg"
                 style={{ background: "var(--gold-cta)", color: "var(--gold-cta-ink)" }}
               >
                 Approve & schedule
               </button>
               <button
-                onClick={() => reject({ postId: selectedPost._id as Id<"posts"> })}
+                onClick={() => { reject({ postId: selectedPost._id as Id<"posts"> }); handleBack(); }}
                 className="flex items-center gap-2 text-sm font-semibold h-10 px-5 rounded-lg"
                 style={{ background: "var(--ink)", color: "var(--ink-on)" }}
               >
                 Request changes
               </button>
               <button
-                onClick={() => reject({ postId: selectedPost._id as Id<"posts"> })}
+                onClick={() => { reject({ postId: selectedPost._id as Id<"posts"> }); handleBack(); }}
                 className="ml-auto flex items-center gap-2 text-sm font-medium h-10 px-5 rounded-lg"
                 style={{ color: "var(--ink-3)" }}
               >

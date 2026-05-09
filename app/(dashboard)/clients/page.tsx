@@ -27,7 +27,7 @@ export default function ClientsPage() {
         <div className="text-[11px] font-medium uppercase tracking-[0.12em] mb-2" style={{ color: "var(--ink-3)" }}>
           Clients
         </div>
-        <h1 className="font-display text-[36px] font-semibold tracking-[-0.022em] leading-[1.1]">
+        <h1 className="font-display text-[28px] md:text-[36px] font-semibold tracking-[-0.022em] leading-[1.1]">
           {clients == null ? "…" : clients.length === 0 ? "No clients yet" : `${clients.length} client${clients.length === 1 ? "" : "s"}`}
         </h1>
         <p className="text-sm mt-1.5" style={{ color: "var(--ink-3)" }}>
@@ -36,7 +36,7 @@ export default function ClientsPage() {
       </div>
 
       {!clients ? (
-        <div className="grid grid-cols-2 gap-3.5">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-3.5">
           {[...Array(4)].map((_, i) => (
             <div key={i} className="rounded-xl h-36 animate-pulse" style={{ background: "var(--paper)" }} />
           ))}
@@ -56,7 +56,7 @@ export default function ClientsPage() {
           </Link>
         </div>
       ) : (
-        <div className="grid grid-cols-2 gap-3.5">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-3.5">
           {clients.map((client: any) => (
             <Link
               key={client._id}
