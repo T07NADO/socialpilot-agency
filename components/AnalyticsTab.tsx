@@ -12,10 +12,15 @@ export default function AnalyticsTab({ clientId }: { clientId: Id<"clients"> }) 
   const syncStats = useAction(api.linkedin.syncClientStats);
   const [syncing, setSyncing] = useState(false);
 
+  const [syncError, setSyncError] = useState<string | null>(null);
+
   async function handleSync() {
     setSyncing(true);
+    setSyncError(null);
     try {
       await syncStats({ clientId });
+    } catch (e: any) {
+      setSyncError(e?.message ?? "Sync failed");
     } finally {
       setSyncing(false);
     }
@@ -46,6 +51,10 @@ export default function AnalyticsTab({ clientId }: { clientId: Id<"clients"> }) 
           {syncing ? "Syncing…" : "Sync from LinkedIn"}
         </button>
       </div>
+
+      {syncError && (
+        <p className="text-[12px] text-right" style={{ color: "var(--rust)" }}>{syncError}</p>
+      )}
 
       {/* Metric cards */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">

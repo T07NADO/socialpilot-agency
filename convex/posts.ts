@@ -188,6 +188,18 @@ export const update = mutation({
 
 // ── Internal helpers used by platform publish actions ──────────────────────
 
+export const listPublishedWithPlatformId = internalQuery({
+  args: { clientId: v.id("clients") },
+  handler: async (ctx, args) => {
+    const posts = await ctx.db
+      .query("posts")
+      .withIndex("by_client", (q: any) => q.eq("clientId", args.clientId))
+      .filter((q: any) => q.eq(q.field("status"), "PUBLISHED"))
+      .collect();
+    return posts.filter((p: any) => p.platformPostId);
+  },
+});
+
 export const updateStats = internalMutation({
   args: {
     postId: v.id("posts"),
