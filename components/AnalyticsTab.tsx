@@ -3,57 +3,68 @@
 import { useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { Id } from "@/convex/_generated/dataModel";
-import { BarChart, Bar, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer } from "recharts";
+import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer } from "recharts";
 import { Heart, MessageCircle, Eye, Send } from "lucide-react";
 
 export default function AnalyticsTab({ clientId }: { clientId: Id<"clients"> }) {
   const stats = useQuery(api.analytics.getClientStats, { clientId });
 
-  if (!stats) return <div className="animate-pulse h-48 bg-gray-100 rounded-xl" />;
+  if (!stats) return <div className="animate-pulse h-48 rounded-xl" style={{ background: "var(--sand)" }} />;
 
   const metrics = [
-    { label: "Total Likes", value: stats.totalLikes, icon: Heart, color: "text-red-500" },
-    { label: "Comments", value: stats.totalComments, icon: MessageCircle, color: "text-blue-500" },
-    { label: "Impressions", value: stats.totalImpressions, icon: Eye, color: "text-violet-500" },
-    { label: "Published", value: stats.publishedPosts, icon: Send, color: "text-green-500" },
+    { label: "Total Likes",  value: stats.totalLikes,       icon: Heart,          color: "var(--rust)" },
+    { label: "Comments",     value: stats.totalComments,    icon: MessageCircle,  color: "var(--sky-ink)" },
+    { label: "Impressions",  value: stats.totalImpressions, icon: Eye,            color: "var(--ink-3)" },
+    { label: "Published",    value: stats.publishedPosts,   icon: Send,           color: "var(--sage)" },
   ];
 
+  const cardStyle = { background: "var(--paper)", border: "1px solid var(--line)", boxShadow: "var(--shadow-edge)" };
+
   return (
-    <div className="space-y-6">
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+    <div className="space-y-5">
+      {/* Metric cards */}
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
         {metrics.map(({ label, value, icon: Icon, color }) => (
-          <div key={label} className="bg-white rounded-xl border p-4">
-            <Icon className={`w-5 h-5 ${color} mb-2`} />
-            <p className="text-2xl font-bold">{value.toLocaleString()}</p>
-            <p className="text-xs text-gray-400 mt-0.5">{label}</p>
+          <div key={label} className="rounded-xl p-4" style={cardStyle}>
+            <Icon className="w-4 h-4 mb-2.5" style={{ color }} />
+            <p className="font-display text-[28px] font-semibold tracking-[-0.02em] leading-none" style={{ color: "var(--ink)" }}>
+              {value.toLocaleString()}
+            </p>
+            <p className="text-[12px] mt-1.5 font-medium uppercase tracking-[0.06em]" style={{ color: "var(--ink-3)" }}>
+              {label}
+            </p>
           </div>
         ))}
       </div>
 
-      <div className="bg-white rounded-xl border p-5">
-        <h3 className="font-semibold mb-4">Posts by platform, last 8 weeks</h3>
-        <ResponsiveContainer width="100%" height={220}>
-          <BarChart data={stats.weeklyBreakdown} barSize={10}>
-            <XAxis dataKey="week" tick={{ fontSize: 11 }} />
-            <YAxis tick={{ fontSize: 11 }} />
-            <Tooltip />
-            <Legend />
+      {/* Weekly chart */}
+      <div className="rounded-xl p-5" style={cardStyle}>
+        <h3 className="font-display text-[15px] font-semibold mb-4" style={{ color: "var(--ink)" }}>
+          Posts published, last 8 weeks
+        </h3>
+        <ResponsiveContainer width="100%" height={200}>
+          <BarChart data={stats.weeklyBreakdown} barSize={12}>
+            <XAxis dataKey="week" tick={{ fontSize: 11, fill: "var(--ink-4)", fontFamily: "Geist Mono" }} axisLine={false} tickLine={false} />
+            <YAxis tick={{ fontSize: 11, fill: "var(--ink-4)", fontFamily: "Geist Mono" }} axisLine={false} tickLine={false} allowDecimals={false} />
+            <Tooltip
+              contentStyle={{ background: "var(--paper)", border: "1px solid var(--line)", borderRadius: 8, fontSize: 12 }}
+              cursor={{ fill: "var(--sand)" }}
+            />
             <Bar dataKey="LINKEDIN" fill="#0A66C2" radius={[4, 4, 0, 0]} />
-            <Bar dataKey="INSTAGRAM" fill="#E1306C" radius={[4, 4, 0, 0]} />
           </BarChart>
         </ResponsiveContainer>
       </div>
 
-      <div className="grid grid-cols-2 gap-4">
-        {Object.entries(stats.byPlatform).map(([platform, count]) => (
-          <div key={platform} className="bg-white rounded-xl border p-4">
-            <p className={`text-sm font-medium mb-1 ${platform === "LINKEDIN" ? "text-blue-600" : "text-pink-500"}`}>
-              {platform}
-            </p>
-            <p className="text-2xl font-bold">{count as number}</p>
-            <p className="text-xs text-gray-400">published posts</p>
-          </div>
-        ))}
+      {/* LinkedIn summary */}
+      <div className="rounded-xl p-5" style={cardStyle}>
+        <div className="flex items-center gap-2 mb-1">
+          <img src="/badge-linkedin.svg" width={18} height={18} alt="LinkedIn" />
+          <span className="text-[12px] font-semibold uppercase tracking-[0.06em]" style={{ color: "var(--ink-2)" }}>LinkedIn</span>
+        </div>
+        <p className="font-display text-[28px] font-semibold tracking-[-0.02em]" style={{ color: "var(--ink)" }}>
+          {stats.byPlatform.LINKEDIN}
+        </p>
+        <p className="text-[12px] mt-0.5" style={{ color: "var(--ink-4)" }}>published posts</p>
       </div>
     </div>
   );

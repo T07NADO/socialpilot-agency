@@ -19,7 +19,6 @@ export const getClientStats = query({
 
     const byPlatform = {
       LINKEDIN: published.filter((p) => p.platform === "LINKEDIN").length,
-      INSTAGRAM: published.filter((p) => p.platform === "INSTAGRAM").length,
     };
 
     // Last 8 weeks
@@ -33,7 +32,6 @@ export const getClientStats = query({
       return {
         week: `W${i + 1}`,
         LINKEDIN: weekPosts.filter((p) => p.platform === "LINKEDIN").length,
-        INSTAGRAM: weekPosts.filter((p) => p.platform === "INSTAGRAM").length,
       };
     });
 
