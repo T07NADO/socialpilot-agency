@@ -101,34 +101,6 @@ export default function Sidebar({ agency }: { agency: any }) {
           );
         })}
 
-        <div
-          className="text-[11px] font-medium uppercase tracking-[0.08em] px-2.5 pt-4 pb-1.5"
-          style={{ color: "var(--ink-3)" }}
-        >
-          Operations
-        </div>
-
-        <button
-          className="flex items-center gap-2.5 px-2.5 py-[7px] rounded-[6px] text-sm text-left w-full transition-colors cursor-not-allowed opacity-50"
-          style={{ color: "var(--ink-3)" }}
-          disabled
-        >
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" className="w-4 h-4 flex-shrink-0">
-            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
-          </svg>
-          <span className="font-medium">Engagement</span>
-        </button>
-
-        <button
-          className="flex items-center gap-2.5 px-2.5 py-[7px] rounded-[6px] text-sm text-left w-full transition-colors cursor-not-allowed opacity-50"
-          style={{ color: "var(--ink-3)" }}
-          disabled
-        >
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" className="w-4 h-4 flex-shrink-0">
-            <path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/>
-          </svg>
-          <span className="font-medium">Analytics</span>
-        </button>
       </nav>
 
       {/* Footer */}
