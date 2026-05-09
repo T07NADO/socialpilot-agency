@@ -4,77 +4,72 @@ import { action, internalAction } from "./_generated/server";
 import { internal } from "./_generated/api";
 import { v } from "convex/values";
 
+// Called from the Analytics tab — fetches latest stats from LinkedIn for all
+// published posts for a client and writes them back to the database.
 export const syncClientStats = action({
   args: { clientId: v.id("clients") },
   handler: async (ctx, args) => {
+    // 1. Get all published posts that have a LinkedIn post ID
     const posts: any[] = await ctx.runQuery(
       internal.posts.listPublishedWithPlatformId,
       { clientId: args.clientId }
     );
 
-    for (const post of posts) {
-      try {
-        await ctx.runAction(internal.linkedin.syncPostStats, { postId: post._id });
-      } catch (e) {
-        console.error(`Failed to sync post ${post._id}:`, e);
-      }
+    if (posts.length === 0) return;
+
+    // 2. Get the LinkedIn account for this client
+    const account: any = await ctx.runQuery(
+      internal.socialAccounts.getForPublish,
+      { clientId: args.clientId, platform: "LINKEDIN" }
+    );
+
+    if (!account?.accessToken) {
+      throw new Error("No LinkedIn account connected for this client");
     }
-  },
-});
 
-export const syncPostStats = internalAction({
-  args: { postId: v.id("posts") },
-  handler: async (ctx, args) => {
-    const post: any = await ctx.runQuery(internal.posts.getById, { postId: args.postId });
-    if (!post?.platformPostId) return;
-
-    const account: any = await ctx.runQuery(internal.socialAccounts.getForPublish, {
-      clientId: post.clientId,
-      platform: "LINKEDIN",
-    });
-    if (!account?.accessToken) return;
-
-    const encodedUrn = encodeURIComponent(post.platformPostId);
     const headers: Record<string, string> = {
       Authorization: `Bearer ${account.accessToken}`,
       "X-Restli-Protocol-Version": "2.0.0",
     };
 
-    let likes = 0;
-    let comments = 0;
-    let impressions = 0;
+    // 3. For each post, fetch stats and update
+    for (const post of posts) {
+      let likes = 0;
+      let comments = 0;
+      let impressions = 0;
 
-    // Reactions + comments via socialActions
-    try {
-      const res = await fetch(
-        `https://api.linkedin.com/v2/socialActions/${encodedUrn}`,
-        { headers }
-      );
-      if (res.ok) {
-        const d = await res.json();
-        likes    = d.likesSummary?.totalLikes ?? 0;
-        comments = d.commentsSummary?.totalFirstLevelComments ?? 0;
-      }
-    } catch (_) {}
+      const encodedUrn = encodeURIComponent(post.platformPostId);
 
-    // Impressions via share statistics
-    try {
-      const res = await fetch(
-        `https://api.linkedin.com/v2/socialMetadata/(threadUrn:${encodedUrn})?projection=(totalShareStatistics)`,
-        { headers }
-      );
-      if (res.ok) {
-        const d = await res.json();
-        impressions = d.totalShareStatistics?.impressionCount ?? 0;
-      }
-    } catch (_) {}
+      try {
+        const res = await fetch(
+          `https://api.linkedin.com/v2/socialActions/${encodedUrn}`,
+          { headers }
+        );
+        if (res.ok) {
+          const d = await res.json();
+          likes    = d.likesSummary?.totalLikes ?? 0;
+          comments = d.commentsSummary?.totalFirstLevelComments ?? 0;
+        }
+      } catch (_) {}
 
-    await ctx.runMutation(internal.posts.updateStats, {
-      postId: args.postId,
-      likes,
-      comments,
-      impressions,
-    });
+      try {
+        const res = await fetch(
+          `https://api.linkedin.com/v2/socialMetadata/(threadUrn:${encodedUrn})?projection=(totalShareStatistics)`,
+          { headers }
+        );
+        if (res.ok) {
+          const d = await res.json();
+          impressions = d.totalShareStatistics?.impressionCount ?? 0;
+        }
+      } catch (_) {}
+
+      await ctx.runMutation(internal.posts.updateStats, {
+        postId: post._id,
+        likes,
+        comments,
+        impressions,
+      });
+    }
   },
 });
 
